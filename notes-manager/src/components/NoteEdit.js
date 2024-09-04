@@ -1,9 +1,24 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-const NoteForm = ({ addNote }) => {
-	const [note, setNote] = useState({ title: "", content: "" });
+const NoteEdit = ({ notes, updateNote }) => {
+	const { id } = useParams();
 	const navigate = useNavigate();
+	const noteToEdit = notes.find((note) => note._id === id);
+
+	const [note, setNote] = useState({
+		title: "",
+		content: "",
+	});
+
+	useEffect(() => {
+		if (noteToEdit) {
+			setNote({
+				title: noteToEdit.title,
+				content: noteToEdit.content,
+			});
+		}
+	}, [noteToEdit]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -12,7 +27,7 @@ const NoteForm = ({ addNote }) => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		addNote(note);
+		updateNote(id, note);
 		navigate("/");
 	};
 
@@ -39,10 +54,10 @@ const NoteForm = ({ addNote }) => {
 				type="submit"
 				className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-700"
 			>
-				Add Note
+				Update Note
 			</button>
 		</form>
 	);
 };
 
-export default NoteForm;
+export default NoteEdit;
